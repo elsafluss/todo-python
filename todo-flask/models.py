@@ -41,7 +41,6 @@ class Schema:
 
         self.conn.execute(query)
 
-
     class ToDoModel:
         TABLENAME = "TODO"
 
@@ -81,7 +80,7 @@ class Schema:
             Title: new title
             """
             set_query = ", ".join([f'{column} = {value}'
-                        for column, value in update_dict.items()])
+                                  for column, value in update_dict.items()])
 
             query = f"UPDATE {self.TABLENAME} " \
                     f"SET {set_query}" \
@@ -89,3 +88,22 @@ class Schema:
             self.conn.execute(query)
             return self.get_by_id(item_id)
 
+        def list_items(self, where_clause=""):
+            query = f"SELECT id, Title, Description, DueDate, _is_done " \
+                    f"from {self.TABLENAME} WHERE _is_deleted != {1} " + where_clause
+            print(query)
+            result_set = self.conn.execute(query).fetchall()
+            result = [{column: row[i]
+                      for i, column in enumerate(result_set[0].keys())}
+                      for row in result_set]
+            return result
+
+    class User:
+        TABLENAME = "User"
+
+        def create(self, name, email):
+            query = f'insert into {self.TABLENAME} ' \
+                    f'(Name, Email) ' \
+                    f'values ({name},{email})'
+            result = self.conn.execute(query)
+            return result
