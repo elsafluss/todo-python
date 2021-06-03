@@ -32,10 +32,10 @@ class Schema:
 
         query = """
         CREATE TABLE IF NOT EXISTS "User" (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT NOT NULL,
-            Email TEXT,
-            CreatedOn Date DEFAULT CURRENT_DATE
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          Name TEXT NOT NULL,
+          Email TEXT,
+          CreatedOn Date DEFAULT CURRENT_DATE
         );
         """
 
