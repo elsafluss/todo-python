@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 from service import ToDoService
 from models import Schema
 
-import json
-
 app = Flask(__name__)
 
 
