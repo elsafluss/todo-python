@@ -58,20 +58,19 @@ class ToDoModel:
         return self.list_items(where_clause)
 
     def create(self, params):
-        print(params)
+        # print(params)
         query = f'insert into {self.TABLE}' \
-                f'(Title, Description, DueDate, UserId' \
-                f'values ("{params.get("Title")}","{params.get("Description")}")' \
-                f'values ("{params.get("DueDate")}","{params.get("UserId")}")'
-
+                f'(Title, Description, DueDate, UserId) ' \
+                f'values ("{params.get("Title")}","{params.get("Description")}",' \
+                f'"{params.get("DueDate")}","{params.get("UserId")}")'
         result = self.conn.execute(query)
         return self.get_by_id(result.lastrowid)
 
-    def __delete__(self, item_id):
+    def delete(self, item_id):
         query = f"UPDATE {self.TABLE} " \
-                f"SET _is_deleted = {1}" \
+                f"SET _is_deleted =  {1} " \
                 f"WHERE id = {item_id}"
-        print(query)
+        # print(query)
         self.conn.execute(query)
         return self.list_items()
 
@@ -92,7 +91,7 @@ class ToDoModel:
     def list_items(self, where_clause=""):
         query = f"SELECT id, Title, Description, DueDate, _is_done " \
                 f"from {self.TABLE} WHERE _is_deleted != {1} " + where_clause
-        print(query)
+        # print(query)
         result_set = self.conn.execute(query).fetchall()
         result = [{column: row[i]
                   for i, column in enumerate(result_set[0].keys())}
@@ -102,6 +101,14 @@ class ToDoModel:
 
 class User:
     TABLE = "User"
+
+    def __init__(self):
+        self.conn = sqlite3.connect('todo.db')
+        self.conn.row_factory = sqlite3.Row
+
+    def __del__(self):
+        self.conn.commit()
+        self.conn.close()
 
     def create(self, name, email):
         query = f'insert into {self.TABLE} ' \
